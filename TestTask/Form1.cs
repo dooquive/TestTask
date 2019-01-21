@@ -105,15 +105,16 @@ namespace TestTask
         {
             int SumCount;
             int NumUniqIds;
+            string[] TempIds;
+            string temp;
 
             for (int i = 0; i < NumLines; i++)
             {
                 if(UsersCountries[i] != null)
                 {
+                    temp = UsersIds[i];
                     // Сумма по count для фиксированной страны
                     SumCount = UsersCount[i];
-                    // Количество уникальных id
-                    NumUniqIds = 1;
 
                     for (int j = i + 1; j < NumLines; j++)
                     {
@@ -122,12 +123,30 @@ namespace TestTask
                         {
                             // Подчёт суммы по count
                             SumCount += UsersCount[j];
-                            // Если id совпадают, то количетство уникальных не увеличивается
-                            NumUniqIds = UsersIds[i] == UsersIds[j] ? NumUniqIds : NumUniqIds+1;
+
+                            temp += "," + UsersIds[j];
+
                             // "Обнуление" одинаковых стран в общем массиве
                             UsersCountries[j] = null;
                         }
                     }
+
+                    // Массив всех id для страны
+                    TempIds = temp.Split(',');
+                    // Количество уникальных id
+                    NumUniqIds = 0;
+                    // Подсчёт уникальных id для страны
+                    for (int k = 0; k < TempIds.Length; k++)
+                    {
+                        // Вспомогательная переменная, если не найдено ни одного совпадения c k-м id, то DifferentIds == k
+                        int DifferentIds = 0;
+                        while (DifferentIds < k && TempIds[DifferentIds] != TempIds[k])
+                        {
+                            DifferentIds++;
+                        }
+                        NumUniqIds += DifferentIds == k ? 1 : 0;
+                    }
+
                 } else { continue; }
 
                 // Добавление строки в итоговую таблицу (объект DataGridView)
